@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Instalar AbacateOS
+Name[en]=Install AbacateOS
+Comment=Instalar o AbacateOS no computador
+Exec=pkexec /usr/bin/calamares
+Icon=drive-harddisk
+Terminal=false
+Categories=System;Settings;
+Keywords=install;installer;instalar;

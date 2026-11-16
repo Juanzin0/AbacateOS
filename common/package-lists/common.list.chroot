@@ -1,0 +1,81 @@
+# ---- Base do sistema (comum às duas edições) ----
+linux-image-amd64
+live-boot
+live-config
+live-config-systemd
+systemd-sysv
+sudo
+locales
+console-setup
+keyboard-configuration
+tzdata
+firmware-linux-free
+firmware-misc-nonfree
+firmware-realtek
+firmware-atheros
+firmware-iwlwifi
+firmware-brcm80211
+firmware-amd-graphics
+xserver-xorg-video-radeon
+intel-microcode
+amd64-microcode
+
+# ---- Instalador gráfico ----
+calamares
+calamares-settings-debian
+policykit-1
+polkitd
+parted
+e2fsprogs
+dosfstools
+grub-pc
+grub-efi-amd64
+efibootmgr
+os-prober
+
+# ---- Vídeo / entrada ----
+xorg
+xserver-xorg-video-fbdev
+xserver-xorg-video-vesa
+xserver-xorg-video-intel
+xserver-xorg-video-amdgpu
+xserver-xorg-video-nouveau
+xserver-xorg-input-libinput
+
+# ---- Rede e áudio ----
+network-manager
+wpasupplicant
+pipewire-audio
+pavucontrol
+
+# ---- Aparência (fontes e ícones base) ----
+librsvg2-common
+adwaita-icon-theme
+papirus-icon-theme
+fonts-inter
+fonts-dejavu-core
+fonts-noto-core
+fonts-noto-color-emoji
+
+# ---- Apps comuns ----
+firefox-esr
+firefox-esr-l10n-pt-br
+unzip
+p7zip-full
+gdebi
+nano
+curl
+wget
+usbutils
+pciutils
+htop
+
+# ---- Desempenho ----
+zram-tools
+earlyoom
+irqbalance
+
+# ---- Necessários só durante o build para baixar os temas Fluent (removidos no final) ----
+git
+ca-certificates
+sassc

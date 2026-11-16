@@ -1,0 +1,4 @@
+# AbacateOS Normal - zram menor, ja que ha mais RAM
+ALGO=zstd
+PERCENT=25
+PRIORITY=100

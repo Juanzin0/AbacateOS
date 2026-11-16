@@ -1,0 +1,4 @@
+# AbacateOS - swap comprimido na RAM (zram-tools)
+ALGO=zstd
+PERCENT=60
+PRIORITY=100

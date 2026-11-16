@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b3a1a"/>
+      <stop offset="1" stop-color="#0c1f0d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <!-- abacate: casca -->
+  <path d="M960 250 C1130 250 1230 430 1230 620 C1230 810 1110 900 960 900 C810 900 690 810 690 620 C690 430 790 250 960 250 Z" fill="#3f7d2a"/>
+  <!-- polpa -->
+  <path d="M960 300 C1100 300 1180 450 1180 620 C1180 780 1085 850 960 850 C835 850 740 780 740 620 C740 450 820 300 960 300 Z" fill="#c9e265"/>
+  <!-- caroco -->
+  <ellipse cx="960" cy="680" rx="105" ry="115" fill="#7a4a24"/>
+  <ellipse cx="925" cy="640" rx="28" ry="38" fill="#a06a3c" opacity="0.7"/>
+  <text x="960" y="1000" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="64" font-weight="bold" fill="#c9e265">AbacateOS</text>
+</svg>

@@ -1,0 +1,33 @@
+# ---- AbacateOS Lite: XFCE com barra estilo Windows 11 ----
+xfce4-session
+xfce4-panel
+xfce4-settings
+xfce4-terminal
+xfce4-notifyd
+xfce4-power-manager
+xfce4-power-manager-plugins
+xfce4-pulseaudio-plugin
+xfce4-whiskermenu-plugin
+xfce4-docklike-plugin
+xfce4-taskmanager
+xfdesktop4
+xfwm4
+thunar
+thunar-volman
+thunar-archive-plugin
+gvfs
+gvfs-backends
+mousepad
+ristretto
+atril
+file-roller
+lightdm
+lightdm-gtk-greeter
+network-manager-gnome
+arc-theme
+gtk2-engines-murrine
+
+# ---- Desempenho (só no Lite) ----
+preload
+cpufrequtils
+laptop-mode-tools

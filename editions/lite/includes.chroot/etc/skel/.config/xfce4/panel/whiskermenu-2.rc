@@ -1,0 +1,11 @@
+favorites=firefox-esr.desktop,thunar.desktop,xfce4-terminal.desktop,mousepad.desktop,xfce4-settings-manager.desktop
+button-icon=abacateos-start
+show-button-title=false
+show-button-icon=true
+launcher-show-name=true
+launcher-show-description=false
+launcher-icon-size=4
+position-categories-alternate=true
+position-search-alternate=true
+menu-width=520
+menu-height=620

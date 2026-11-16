@@ -1,0 +1,25 @@
+#!/bin/sh
+# Baixa os temas "Fluent" (visual estilo Windows 11) do GitHub durante o build.
+# Se a rede falhar, o sistema cai nos temas de reserva (Arc/Breeze + Papirus).
+EDITION="$(cat /etc/abacateos-edition 2>/dev/null || echo Normal)"
+WORK=/tmp/abacate-themes
+mkdir -p "$WORK"
+cd "$WORK" || exit 0
+
+fetch() { # $1 = repo
+	timeout 300 git clone --depth=1 "https://github.com/vinceliuice/$1.git" "$1" 2>/dev/null
+}
+
+if fetch Fluent-gtk-theme; then
+	(cd Fluent-gtk-theme && ./install.sh -d /usr/share/themes >/dev/null 2>&1) || true
+fi
+if fetch Fluent-icon-theme; then
+	(cd Fluent-icon-theme && ./install.sh -d /usr/share/icons >/dev/null 2>&1) || true
+fi
+if [ "$EDITION" = "Normal" ] && fetch Fluent-kde; then
+	(cd Fluent-kde && ./install.sh >/dev/null 2>&1) || true
+fi
+
+cd /
+rm -rf "$WORK"
+exit 0

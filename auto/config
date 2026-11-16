@@ -1,0 +1,29 @@
+#!/bin/sh
+# AbacateOS - configuracao do live-build (base: Debian 13 "trixie", 64 bits)
+# A edicao vem da variavel ABACATE_EDITION (lite ou normal), definida pelo build.sh
+set -e
+
+ED="${ABACATE_EDITION:-normal}"
+case "$ED" in
+	lite)   NAME="Lite" ;;
+	normal) NAME="Normal" ;;
+	*) echo "Edicao invalida: $ED"; exit 1 ;;
+esac
+
+lb config noauto \
+	--distribution trixie \
+	--architectures amd64 \
+	--archive-areas "main contrib non-free non-free-firmware" \
+	--binary-images iso-hybrid \
+	--debian-installer none \
+	--iso-application "AbacateOS ${NAME}" \
+	--iso-publisher "AbacateOS Project" \
+	--iso-volume "ABACATEOS_${NAME}" \
+	--image-name "AbacateOS-${NAME}-1.0" \
+	--bootappend-live "boot=live components quiet splash username=abacate hostname=abacateos locales=pt_BR.UTF-8 keyboard-layouts=br timezone=America/Sao_Paulo" \
+	--apt-recommends false \
+	--apt-indices false \
+	--memtest none \
+	--firmware-chroot true \
+	--compression xz \
+	"${@}"

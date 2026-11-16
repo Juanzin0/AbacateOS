@@ -1,0 +1,14 @@
+#!/bin/sh
+# Mostra o estado de desempenho do AbacateOS
+echo "=== AbacateOS ==="
+echo "Kernel : $(uname -r)"
+echo "CPU    : $(grep -m1 'model name' /proc/cpuinfo | cut -d: -f2 | sed 's/^ //')"
+echo
+echo "--- Memoria ---"
+free -h
+echo
+echo "--- Swap (zram) ---"
+swapon --show 2>/dev/null || echo "sem swap ativo"
+echo
+echo "--- Top 5 processos por RAM ---"
+ps -eo pid,comm,%mem --sort=-%mem | head -n 6

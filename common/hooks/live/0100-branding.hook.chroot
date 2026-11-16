@@ -1,0 +1,27 @@
+#!/bin/sh
+# Executado dentro do chroot durante o build da ISO (comum às duas edições)
+set -e
+
+EDITION="$(cat /etc/abacateos-edition 2>/dev/null || echo Normal)"
+
+# ---- Identidade do sistema ----
+# Preserve Debian /etc/os-release: package tools and Calamares depend on Debian identity.
+mkdir -p /usr/lib/abacateos
+printf '%s\n' "AbacateOS ${EDITION} 1.0" > /usr/lib/abacateos/version
+cat > /etc/issue <<EOF
+AbacateOS ${EDITION} 1.0 \\n \\l
+
+EOF
+echo "AbacateOS ${EDITION} 1.0" > /etc/issue.net
+
+# ---- Mascara servicos que gastam RAM/CPU sem necessidade ----
+for svc in cups.service cups-browsed.service avahi-daemon.service \
+           ModemManager.service apt-daily.timer apt-daily-upgrade.timer man-db.timer; do
+	systemctl mask "$svc" 2>/dev/null || true
+done
+
+# ---- Scripts utilitarios ----
+chmod +x /usr/local/bin/abacate-* 2>/dev/null || true
+
+# ---- Icone do menu Iniciar (cache de icones) ----
+gtk-update-icon-cache -f /usr/share/icons/hicolor 2>/dev/null || true

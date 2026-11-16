@@ -1,0 +1,96 @@
+#!/bin/sh
+# Define o visual do Lite: usa Fluent (estilo Windows 11) se o download funcionou,
+# senao cai em Arc-Dark + Papirus-Dark.
+set -e
+
+SKEL=/etc/skel
+XML="$SKEL/.config/xfce4/xfconf/xfce-perchannel-xml"
+mkdir -p "$XML" "$SKEL/.config/gtk-3.0" "$SKEL/.config/gtk-4.0"
+
+# ---- Detecta temas instalados ----
+GTK="$(ls /usr/share/themes 2>/dev/null | grep -i '^Fluent' | grep -i 'dark' | grep -vi 'compact' | head -n1)"
+[ -n "$GTK" ] || GTK="Arc-Dark"
+ICON="$(ls /usr/share/icons 2>/dev/null | grep -i '^Fluent' | grep -i 'dark' | head -n1)"
+[ -n "$ICON" ] || ICON="$(ls /usr/share/icons 2>/dev/null | grep -i '^Fluent' | head -n1)"
+[ -n "$ICON" ] || ICON="Papirus-Dark"
+# Tema de janelas: usa o mesmo nome do GTK se tiver pasta xfwm4
+WM="$GTK"
+[ -d "/usr/share/themes/$WM/xfwm4" ] || WM="Arc-Dark"
+[ -d "/usr/share/themes/$WM/xfwm4" ] || WM="Default"
+
+# ---- GTK2/3/4 ----
+cat > "$SKEL/.config/gtk-3.0/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=$GTK
+gtk-icon-theme-name=$ICON
+gtk-font-name=Inter 10
+gtk-application-prefer-dark-theme=1
+EOF
+cp "$SKEL/.config/gtk-3.0/settings.ini" "$SKEL/.config/gtk-4.0/settings.ini"
+
+# ---- xsettings (tema, icones, fonte) ----
+cat > "$XML/xsettings.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xsettings" version="1.0">
+  <property name="Net" type="empty">
+    <property name="ThemeName" type="string" value="$GTK"/>
+    <property name="IconThemeName" type="string" value="$ICON"/>
+  </property>
+  <property name="Gtk" type="empty">
+    <property name="FontName" type="string" value="Inter 10"/>
+    <property name="CursorThemeName" type="string" value="Adwaita"/>
+  </property>
+  <property name="Xft" type="empty">
+    <property name="Antialias" type="int" value="1"/>
+    <property name="HintStyle" type="string" value="hintslight"/>
+    <property name="RGBA" type="string" value="rgb"/>
+  </property>
+</channel>
+EOF
+
+# ---- Gerenciador de janelas: botoes a direita (como no Windows), sem compositor ----
+cat > "$XML/xfwm4.xml" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfwm4" version="1.0">
+  <property name="general" type="empty">
+    <property name="theme" type="string" value="$WM"/>
+    <property name="title_font" type="string" value="Inter Semi-Bold 10"/>
+    <property name="button_layout" type="string" value="|HMC"/>
+    <property name="title_alignment" type="string" value="left"/>
+    <property name="use_compositing" type="bool" value="false"/>
+    <property name="box_move" type="bool" value="false"/>
+    <property name="box_resize" type="bool" value="false"/>
+    <property name="show_dock_shadow" type="bool" value="false"/>
+    <property name="show_frame_shadow" type="bool" value="false"/>
+    <property name="show_popup_shadow" type="bool" value="false"/>
+  </property>
+</channel>
+EOF
+
+# ---- Papel de parede (cobre os nomes de monitor mais comuns) ----
+{
+echo '<?xml version="1.0" encoding="UTF-8"?>'
+echo '<channel name="xfce4-desktop" version="1.0">'
+echo '  <property name="backdrop" type="empty">'
+echo '    <property name="screen0" type="empty">'
+for m in monitorscreen monitor0 monitor1 monitorVGA-1 monitorHDMI-1 monitorHDMI-A-1 monitorDP-1 monitoreDP-1 monitorLVDS-1 monitorVirtual-1; do
+	echo "      <property name=\"$m\" type=\"empty\">"
+	echo '        <property name="workspace0" type="empty">'
+	echo '          <property name="image-style" type="int" value="5"/>'
+	echo '          <property name="last-image" type="string" value="/usr/share/backgrounds/abacateos/bloom.svg"/>'
+	echo '        </property>'
+	echo '      </property>'
+done
+echo '    </property>'
+echo '  </property>'
+echo '  <property name="desktop-icons" type="empty">'
+echo '    <property name="style" type="int" value="0"/>'
+echo '  </property>'
+echo '</channel>'
+} > "$XML/xfce4-desktop.xml"
+
+# ---- Governor de CPU ----
+echo 'GOVERNOR="ondemand"' > /etc/default/cpufrequtils
+
+# ---- Permissoes dos arquivos do usuario ----
+chmod -R a+rX "$SKEL/.config"

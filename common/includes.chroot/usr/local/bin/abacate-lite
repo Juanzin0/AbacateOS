@@ -1,0 +1,12 @@
+#!/bin/sh
+# Modo ultra-leve: fecha servicos de usuario nao essenciais e libera caches.
+# Uso: sudo abacate-lite
+if [ "$(id -u)" -ne 0 ]; then
+	echo "Execute com sudo: sudo abacate-lite"
+	exit 1
+fi
+sync
+echo 3 > /proc/sys/vm/drop_caches
+systemctl stop cups cups-browsed bluetooth avahi-daemon ModemManager 2>/dev/null
+echo "AbacateOS: caches liberados e servicos extras parados."
+free -h

@@ -1,0 +1,30 @@
+# ---- AbacateOS Normal: KDE Plasma com barra estilo Windows 11 ----
+kde-plasma-desktop
+plasma-nm
+plasma-pa
+plasma-systemmonitor
+powerdevil
+kscreen
+bluedevil
+sddm
+sddm-theme-breeze
+dbus-bin
+breeze-gtk-theme
+kde-config-gtk-style
+xdg-desktop-portal-kde
+
+# ---- Apps do dia a dia ----
+dolphin
+konsole
+kate
+okular
+gwenview
+ark
+spectacle
+kcalc
+vlc
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-l10n-pt-br
+libreoffice-kf6

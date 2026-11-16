@@ -1,0 +1,20 @@
+#!/bin/sh
+# Aplica o layout estilo Windows 11 no Plasma no primeiro login do usuario.
+MARK="$HOME/.config/abacateos-plasma-done"
+[ -f "$MARK" ] && exit 0
+
+# espera o plasmashell aparecer no DBus (ate ~30 s)
+i=0
+while [ $i -lt 30 ]; do
+	if dbus-send --session --dest=org.freedesktop.DBus --print-reply \
+		/org/freedesktop/DBus org.freedesktop.DBus.NameHasOwner string:org.kde.plasmashell 2>/dev/null | grep -q 'boolean true'; then
+		break
+	fi
+	i=$((i + 1))
+	sleep 1
+done
+
+JS="$(cat /usr/share/abacateos/plasma-layout.js)"
+dbus-send --session --dest=org.kde.plasmashell --type=method_call \
+	/PlasmaShell org.kde.PlasmaShell.evaluateScript "string:$JS" >/dev/null 2>&1 \
+	&& touch "$MARK"

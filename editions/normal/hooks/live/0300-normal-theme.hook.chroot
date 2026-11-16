@@ -1,0 +1,73 @@
+#!/bin/sh
+# Visual do Normal: Fluent KDE (estilo Windows 11) se baixou; senao Breeze Dark + Papirus.
+set -e
+
+SKEL=/etc/skel
+CFG="$SKEL/.config"
+mkdir -p "$CFG/gtk-3.0" "$CFG/gtk-4.0"
+
+# ---- Detecta temas ----
+SCHEME="$(ls /usr/share/color-schemes 2>/dev/null | sed 's/\.colors$//' | grep -i 'fluent' | grep -i 'dark' | head -n1)"
+[ -n "$SCHEME" ] || SCHEME="BreezeDark"
+PTHEME="$(ls /usr/share/plasma/desktoptheme 2>/dev/null | grep -i 'fluent' | grep -i 'dark' | head -n1)"
+[ -n "$PTHEME" ] || PTHEME="breeze-dark"
+ICON="$(ls /usr/share/icons 2>/dev/null | grep -i '^Fluent' | grep -i 'dark' | head -n1)"
+[ -n "$ICON" ] || ICON="$(ls /usr/share/icons 2>/dev/null | grep -i '^Fluent' | head -n1)"
+[ -n "$ICON" ] || ICON="Papirus-Dark"
+GTK="$(ls /usr/share/themes 2>/dev/null | grep -i '^Fluent' | grep -i 'dark' | grep -vi 'compact' | head -n1)"
+[ -n "$GTK" ] || GTK="Breeze-Dark"
+# Decoracao de janela (aurorae), se o Fluent KDE instalou
+AUR="$(ls /usr/share/aurorae/themes 2>/dev/null | grep -i 'fluent' | grep -i 'dark' | head -n1)"
+
+# ---- Cores, icones e fonte ----
+cat > "$CFG/kdeglobals" <<EOF
+[General]
+ColorScheme=$SCHEME
+font=Inter,10,-1,5,50,0,0,0,0,0
+menuFont=Inter,10,-1,5,50,0,0,0,0,0
+toolBarFont=Inter,10,-1,5,50,0,0,0,0,0
+
+[Icons]
+Theme=$ICON
+
+[KDE]
+widgetStyle=Breeze
+EOF
+
+cat > "$CFG/plasmarc" <<EOF
+[Theme]
+name=$PTHEME
+EOF
+
+# ---- Janelas: botoes a direita (minimizar, maximizar, fechar) ----
+{
+echo '[org.kde.kdecoration2]'
+echo 'ButtonsOnLeft='
+echo 'ButtonsOnRight=IAX'
+if [ -n "$AUR" ]; then
+	echo 'library=org.kde.kwin.aurorae'
+	echo "theme=__aurorae__svg__$AUR"
+fi
+echo
+echo '[Windows]'
+echo 'BorderlessMaximizedWindows=false'
+} > "$CFG/kwinrc"
+
+# ---- Desliga indexador de arquivos (usa muito disco/CPU) ----
+cat > "$CFG/baloofilerc" <<EOF
+[Basic Settings]
+Indexing-Enabled=false
+EOF
+
+# ---- Apps GTK (Firefox, etc.) com o mesmo visual ----
+cat > "$CFG/gtk-3.0/settings.ini" <<EOF
+[Settings]
+gtk-theme-name=$GTK
+gtk-icon-theme-name=$ICON
+gtk-font-name=Inter 10
+gtk-application-prefer-dark-theme=1
+EOF
+cp "$CFG/gtk-3.0/settings.ini" "$CFG/gtk-4.0/settings.ini"
+
+chmod +x /usr/local/bin/abacate-plasma-setup
+chmod -R a+rX "$CFG"

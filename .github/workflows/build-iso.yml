@@ -1,0 +1,44 @@
+name: Gerar ISO do AbacateOS
+
+on:
+  workflow_dispatch:
+    inputs:
+      edition:
+        description: "Edição a gerar"
+        required: true
+        default: lite
+        type: choice
+        options:
+          - lite
+          - normal
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Liberar espaço em disco
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /opt/hostedtoolcache
+          df -h /
+
+      - name: Gerar a ISO
+        run: sudo bash ./build.sh "${{ inputs.edition }}"
+
+      - name: Verificar imagem gerada
+        run: |
+          test -n "$(find out -maxdepth 1 -name '*.iso' -type f -print -quit)"
+          file out/*.iso
+          sha256sum out/*.iso > out/SHA256SUMS
+
+      - name: Enviar a ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: AbacateOS-${{ inputs.edition }}-iso
+          path: |
+            out/*.iso
+            out/SHA256SUMS
+          compression-level: 0
+          retention-days: 7
